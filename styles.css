@@ -25,7 +25,10 @@ header, footer {
 }
 
 /* Header */
-header h1 {
+header h1{
+	margin:0px;
+}
+header h1 a {
     margin: 0px;
     padding: 10px;
     flex: 1;
@@ -33,9 +36,12 @@ header h1 {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     align-content: stretch;
+    padding-left:18px;
+    text-decoration:none;
+    color:white;
 }
 header h1 img {
     width: 35px;
@@ -183,6 +189,9 @@ main .activo .icono {
     font-weight: bold;
     margin-right: 20px;
 }
+main .activo a{
+	color:black !important;
+}
 #ocultar {
     padding: 10px;
     width: 200px;
@@ -243,4 +252,47 @@ footer {
     align-content: stretch;
     color: white;
 }
-
+/* Inline styles for dashboard grid. You can move these rules to styles.css */
+            .dashboard-grid {
+              display: flex;
+              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+              gap: 20px;
+              padding: 20px;
+              flex-direction: column;
+            }
+            .dashboard-section {
+              background: #fff;
+              border: 1px solid #ccc;
+              padding: 15px;
+              border-radius: 8px;
+              display:grid;
+              grid-template-columns: auto auto auto auto auto;
+            }
+            .dashboard-section h2 {
+              text-align: center;
+              margin-bottom: 10px;
+            }
+            .card {
+              background: #f9f9f9;
+              margin: 10px 0;
+              padding: 15px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              text-align: center;
+              transition: transform 0.2s ease;
+              height:200px;
+              margin:10px;
+            }
+            .card:hover {
+              transform: scale(1.05);
+            }
+            .card a {
+              display: block;
+              text-decoration: none;
+              color: inherit;
+            }
+            .iconoletra{
+            	font-size: 119px;
+    display: block;
+    font-weight: bold;
+            }

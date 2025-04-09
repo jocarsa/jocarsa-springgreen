@@ -15,10 +15,10 @@ if (empty($table)) {
     die("No table specified.");
 }
 
-// Get the action: list, create, edit, or delete.
+// Get the action: listar, crear, editar, or eliminar.
 $accion = isset($_GET['accion']) ? $_GET['accion'] : 'listar';
 
-// Fetch column metadata (including extra info) for the table.
+// Fetch column metadata for the table.
 $columns = [];
 $columnsQuery = "SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT, EXTRA, COLUMN_KEY 
     FROM INFORMATION_SCHEMA.COLUMNS 
@@ -31,7 +31,7 @@ while ($row = $result->fetch_assoc()) {
     $columns[] = $row;
 }
 
-// Determine the primary key column (assume single primary key for this example)
+// Determine the primary key column (assume a single primary key)
 $primaryKey = null;
 foreach ($columns as $col) {
     if ($col['COLUMN_KEY'] === 'PRI') {
@@ -66,7 +66,7 @@ function getInputAttributes($dataType) {
     } elseif (in_array($dataType, ['date'])) {
         return ['type' => 'date', 'bind' => 's'];
     } elseif (in_array($dataType, ['datetime', 'timestamp'])) {
-        // Note: HTML5 datetime-local expects a "T" separator.
+        // HTML5 datetime-local expects a "T" separator.
         return ['type' => 'datetime-local', 'bind' => 's'];
     } elseif (in_array($dataType, ['text', 'mediumtext', 'longtext'])) {
         return ['type' => 'textarea', 'bind' => 's'];
@@ -84,7 +84,6 @@ function getInputAttributes($dataType) {
     <title>Dynamic CRUD: <?php echo htmlspecialchars($table); ?></title>
     <style>
         /* Basic styling */
-        body { font-family: Arial, sans-serif; padding: 20px; }
         table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
         th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
         th { background: #eee; }
@@ -99,7 +98,6 @@ function getInputAttributes($dataType) {
     <p><a href="?table=<?php echo urlencode($table); ?>&accion=crear">+ Crear nuevo registro</a> | <a href="?table=<?php echo urlencode($table); ?>&accion=listar">Listar registros</a></p>
     <hr>
 <?php
-
 // Switch among CRUD actions.
 switch ($accion) {
     case 'listar':
@@ -146,13 +144,21 @@ switch ($accion) {
                 // Skip auto-increment columns.
                 if (strpos($col['EXTRA'], "auto_increment") !== false) continue;
                 $colName = $col['COLUMN_NAME'];
-                if (isset($_POST[$colName])) {
-                    $fields[] = "`$colName`";
-                    $placeholders[] = "?";
-                    $attrs = getInputAttributes($col['DATA_TYPE']);
-                    $types .= $attrs['bind'];
-                    $values[] = $_POST[$colName];
+                $value = isset($_POST[$colName]) ? $_POST[$colName] : '';
+                $attrs = getInputAttributes($col['DATA_TYPE']);
+                // For date and datetime-local fields, default to today's date if not provided.
+                if (($attrs['type'] === 'date' || $attrs['type'] === 'datetime-local') && empty($value)) {
+                    if ($attrs['type'] === 'date') {
+                        $value = date('Y-m-d');
+                    } else {
+                        // For datetime-local, use the "T" separator
+                        $value = date('Y-m-d\TH:i');
+                    }
                 }
+                $fields[] = "`$colName`";
+                $placeholders[] = "?";
+                $types .= $attrs['bind'];
+                $values[] = $value;
             }
             if (count($fields) > 0) {
                 $sql = "INSERT INTO `$table` (" . implode(", ", $fields) . ") VALUES (" . implode(", ", $placeholders) . ")";
@@ -160,7 +166,8 @@ switch ($accion) {
                 if (!$stmt) {
                     die("Prepare failed: " . $mysqli->error);
                 }
-                // Use call_user_func_array to bind parameters.
+                // Bind parameters dynamically.
+                $bind_names = [];
                 $bind_names[] = $types;
                 for ($i = 0; $i < count($values); $i++) {
                     $bind_names[] = &$values[$i];
@@ -171,7 +178,7 @@ switch ($accion) {
                 }
                 $stmt->close();
             }
-            header("Location: ?table=" . urlencode($table) . "&accion=listar");
+            echo '<script>window.location = "?table=' . urlencode($table) . '&accion=listar"</script>';
             exit;
         } else {
             // Display the create form.
@@ -189,7 +196,7 @@ switch ($accion) {
                     $ref = $foreignKeys[$colName];
                     $refTable = $ref['referenced_table'];
                     $refColumn = $ref['referenced_column'];
-                    // Try to pick a display column (first non-PK column) from referenced table.
+                    // Try to pick a display column from the referenced table.
                     $dispColQuery = "SELECT COLUMN_NAME 
                         FROM INFORMATION_SCHEMA.COLUMNS 
                         WHERE TABLE_SCHEMA='$dbName' AND TABLE_NAME='$refTable' AND COLUMN_KEY <> 'PRI'
@@ -257,6 +264,7 @@ switch ($accion) {
             if (!$stmt) {
                 die("Prepare failed: " . $mysqli->error);
             }
+            $bind_names = [];
             $bind_names[] = $types;
             for ($i = 0; $i < count($values); $i++) {
                 $bind_names[] = &$values[$i];
@@ -279,7 +287,6 @@ switch ($accion) {
             echo "<h3>Editar Registro (ID: " . htmlspecialchars($id) . ")</h3>";
             echo "<form method='post' action='?table=" . urlencode($table) . "&accion=editar&id=" . urlencode($id) . "'>";
             foreach ($columns as $col) {
-                // Optionally, skip auto_increment primary key from being edited.
                 if ($col['COLUMN_NAME'] === $primaryKey && strpos($col['EXTRA'], "auto_increment") !== false) {
                     echo "<p><strong>" . htmlspecialchars($col['COLUMN_NAME']) . ":</strong> " . htmlspecialchars($record[$col['COLUMN_NAME']]) . "</p>";
                     continue;
@@ -287,7 +294,6 @@ switch ($accion) {
                 $colName = $col['COLUMN_NAME'];
                 $attrs = getInputAttributes($col['DATA_TYPE']);
                 $value = isset($record[$colName]) ? $record[$colName] : "";
-                // For datetime-local, convert value (if needed) replacing space with "T"
                 if ($attrs['type'] === 'datetime-local') {
                     $value = str_replace(' ', 'T', $value);
                 }
@@ -347,7 +353,7 @@ switch ($accion) {
             die("Deletion failed: " . $stmt->error);
         }
         $stmt->close();
-        header("Location: ?table=" . urlencode($table) . "&accion=listar");
+        echo '<script>window.location = "?table=' . urlencode($table) . '&accion=listar"</script>';
         exit;
         break;
 
