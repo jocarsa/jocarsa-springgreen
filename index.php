@@ -1,153 +1,96 @@
 <?php
-// index.php
 session_start();
-
-// Para simplificar, conexión a la BD aquí (lo ideal es un archivo separado)
 include "config.php";
+// Create database connection.
 $mysqli = new mysqli($host, $user, $pass, $dbName);
 if ($mysqli->connect_errno) {
-    die("Error de conexión MySQL: " . $mysqli->connect_error);
-}
-
-// Definimos las secciones
-$secciones = [
-    'propiedades' => 'Propiedades',
-    'tipos_habitacion' => 'Tipos de Habitación',
-    'habitaciones' => 'Habitaciones',
-    'huespedes' => 'Huéspedes',
-    'reservas' => 'Reservas',
-    'tarifas' => 'Tarifas',
-    'facturas' => 'Facturas',
-    'facturas_detalle' => 'Detalle Facturas',
-    'inventario' => 'Inventario',
-    'personal' => 'Personal',
-    'eventos' => 'Eventos',
-    'presupuestos' => 'Presupuestos',
-    'mantenimiento' => 'Mantenimiento',
-    'limpieza' => 'Limpieza',
-    'canales_venta' => 'Canales de Venta',
-    'reservas_canales' => 'Rel. Reservas-Canales',
-    'restaurante_mesas' => 'Rest. Mesas',
-    'restaurante_pedidos' => 'Rest. Pedidos',
-    'restaurante_menu' => 'Rest. Menú',
-    'restaurante_pedidos_detalle' => 'Rest. Detalle Pedidos'
-];
-
-$section = isset($_GET['section']) ? $_GET['section'] : 'propiedades';
-if (!array_key_exists($section, $secciones)) {
-    $section = 'propiedades';
+    die("MySQL Connection Error: " . $mysqli->connect_error);
 }
 ?>
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <title>Panel de Administración</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <!-- ... resto del header igual ... -->
-    </header>
-    <script>
-        // ... tu script del header (invertir colores, etc.) ...
-    </script>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>jocarsa | aplicación</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <!-- Cabecera -->
+        <header>
+            <h1>
+                <img src="https://static.jocarsa.com/logos/teal.png" alt="Logo">
+                jocarsa | aplicación
+            </h1>
+            <nav>
+                <!-- Conserva los botones de la cabecera tal como estaban -->
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve">A</button>
+                <button class="boton relieve" id="invertir"><span class="icono">☀</span></button>
+                <button class="boton relieve" id="textogrande"><span class="icono">🔎</span></button>
+                <button class="boton relieve" id="textopequeno"><span class="icono">🔎</span></button>
+            </nav>
+            <div id="cerrarsesion">🔒</div>
+        </header>
+        <!-- Fin Cabecera -->
 
-    <main>
-        <nav>
-            <div class="enlaces">
-                <?php foreach($secciones as $sec => $nombreSec): ?>
-                    <div class="<?php echo ($sec == $section) ? 'activo':''; ?>">
-                        <span class="icono relieve">
-                            <?php echo mb_substr($nombreSec, 0, 1); ?>
-                        </span>
-                        <a href="?section=<?php echo $sec; ?>" style="color:inherit; text-decoration:none;">
-                            <?php echo $nombreSec; ?>
-                        </a>
+        <main>
+            <!-- Menú de navegación lateral (izquierdo) -->
+            <nav>
+                <div class="enlaces">
+                    <?php
+                    // Query for list of tables
+                    $resultTables = $mysqli->query("SHOW TABLES");
+                    if ($resultTables) {
+                        while ($row = $resultTables->fetch_row()) {
+                            // $row[0] contains the table name.
+                            $tableName = $row[0];
+                            echo "<div>";
+                            echo "<a href=\"index.php?table=" . urlencode($tableName) . "&accion=listar\" style=\"color:white; text-decoration:none;\">";
+                            echo htmlspecialchars($tableName);
+                            echo "</a>";
+                            echo "</div>";
+                        }
+                    }
+                    ?>
+                </div>
+                <div class="operaciones">
+                    <div id="ocultar">
+                        <span class="icono relieve">></span> Ocultar
                     </div>
-                <?php endforeach; ?>
-            </div>
-            <div class="operaciones">
-                <div id="ocultar"><span class="icono relieve">></span>Ocultar</div>
-            </div>
-        </nav>
-        <script>
-            // ... tu script para mostrar/ocultar menú ...
-        </script>
+                </div>
+            </nav>
+            <!-- Fin Menú de navegación lateral -->
 
-        <section>
-            <?php
-            switch($section) {
-                case 'propiedades':
-                    include "crud_propiedades.php";
-                    break;
-                case 'tipos_habitacion':
-                    include "crud_tipos_habitacion.php";
-                    break;
-                case 'habitaciones':
-                    include "crud_habitaciones.php";
-                    break;
-                case 'huespedes':
-                    include "crud_huespedes.php";
-                    break;
-                case 'reservas':
-                    include "crud_reservas.php";
-                    break;
-                case 'tarifas':
-                    include "crud_tarifas.php";
-                    break;
-                case 'facturas':
-                    include "crud_facturas.php";
-                    break;
-                case 'facturas_detalle':
-                    include "crud_facturas_detalle.php";
-                    break;
-                case 'inventario':
-                    include "crud_inventario.php";
-                    break;
-                case 'personal':
-                    include "crud_personal.php";
-                    break;
-                case 'eventos':
-                    include "crud_eventos.php";
-                    break;
-                case 'presupuestos':
-                    include "crud_presupuestos.php";
-                    break;
-                case 'mantenimiento':
-                    include "crud_mantenimiento.php";
-                    break;
-                case 'limpieza':
-                    include "crud_limpieza.php";
-                    break;
-                case 'canales_venta':
-                    include "crud_canales_venta.php";
-                    break;
-                case 'reservas_canales':
-                    include "crud_reservas_canales.php";
-                    break;
-                case 'restaurante_mesas':
-                    include "crud_restaurante_mesas.php";
-                    break;
-                case 'restaurante_pedidos':
-                    include "crud_restaurante_pedidos.php";
-                    break;
-                case 'restaurante_menu':
-                    include "crud_restaurante_menu.php";
-                    break;
-                case 'restaurante_pedidos_detalle':
-                    include "crud_restaurante_pedidos_detalle.php";
-                    break;
-                default:
-                    echo "<h3>Sección no implementada aún.</h3>";
-                    break;
-            }
-            ?>
-        </section>
-    </main>
-    <footer>
-        <p>(c) 2025 jocarsa | aplicación</p>
-    </footer>
-</body>
+            <!-- Sección principal -->
+            <section>
+                <?php
+                // If a table parameter is provided, include the dynamic super-controller.
+                if(isset($_GET['table'])) {
+                    include "super_controller.php";
+                } else {
+                    // Otherwise, show a welcome message.
+                    echo "<h2>Bienvenido al Panel de Administración</h2>";
+                    echo "<p>Seleccione una tabla del menú izquierdo para ver o editar sus registros.</p>";
+                }
+                ?>
+            </section>
+        </main>
+        <!-- Fin Sección principal -->
+
+        <!-- Pie de Página -->
+        <footer>
+            <p>(c) 2025 jocarsa | aplicación</p>
+        </footer>
+    </body>
 </html>
 

@@ -10,17 +10,14 @@ if ($_POST) {
     $capacidad = $_POST['capacidad'] ?? 0;
 
     if ($accion == 'crear') {
-        $stmt = $mysqli->prepare("INSERT INTO restaurante_mesas (propiedad_id, table_name, capacity)
-                                  VALUES (?, ?, ?)");
+        $stmt = $mysqli->prepare("INSERT INTO restaurante_mesas (propiedad_id, table_name, capacity) VALUES (?, ?, ?)");
         $stmt->bind_param("isi", $propiedad_id, $nombre_mesa, $capacidad);
         $stmt->execute();
         $stmt->close();
         header("Location: ?section=restaurante_mesas");
         exit;
     } elseif ($accion == 'editar' && $mesa_id > 0) {
-        $stmt = $mysqli->prepare("UPDATE restaurante_mesas
-                                  SET propiedad_id=?, table_name=?, capacity=?
-                                  WHERE table_id=?");
+        $stmt = $mysqli->prepare("UPDATE restaurante_mesas SET propiedad_id=?, table_name=?, capacity=? WHERE table_id=?");
         $stmt->bind_param("isii", $propiedad_id, $nombre_mesa, $capacidad, $mesa_id);
         $stmt->execute();
         $stmt->close();
@@ -48,9 +45,7 @@ if ($accion == 'crear') {
         <label>Propiedad:
             <select name="propiedad_id">
                 <?php while($p = $propiedades->fetch_assoc()): ?>
-                    <option value="<?php echo $p['propiedad_id']; ?>">
-                        <?php echo htmlspecialchars($p['nombre_propiedad']); ?>
-                    </option>
+                    <option value="<?php echo $p['propiedad_id']; ?>"><?php echo htmlspecialchars($p['nombre_propiedad']); ?></option>
                 <?php endwhile; ?>
             </select>
         </label><br><br>
@@ -107,10 +102,7 @@ if ($accion == 'editar' && $mesa_id > 0) {
 }
 
 // LISTAR
-$result = $mysqli->query("SELECT rm.*, p.nombre_propiedad
-                          FROM restaurante_mesas rm
-                          JOIN propiedades p ON rm.propiedad_id = p.propiedad_id
-                          ORDER BY rm.table_id DESC");
+$result = $mysqli->query("SELECT rm.*, p.nombre_propiedad FROM restaurante_mesas rm JOIN propiedades p ON rm.propiedad_id = p.propiedad_id ORDER BY rm.table_id DESC");
 ?>
 <h3>Mesas de Restaurante</h3>
 <p><a href="?section=restaurante_mesas&accion=crear" class="actualizar">+ Crear Mesa</a></p>

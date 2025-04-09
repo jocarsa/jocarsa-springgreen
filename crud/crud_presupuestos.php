@@ -6,21 +6,26 @@ $presupuesto_id = $_GET['id'] ?? 0;
 
 if ($_POST) {
     $propiedad_id = $_POST['propiedad_id'] ?? 0;
-    $anio = $_POST['anio'] ?? date('Y');
-    $monto_total = $_POST['monto_total'] ?? 0.00;
+    $anio         = $_POST['anio']         ?? date('Y');
+    $monto_total  = $_POST['monto_total']  ?? 0.00;
 
     if ($accion == 'crear') {
-        $stmt = $mysqli->prepare("INSERT INTO presupuestos (propiedad_id, year, total_amount)
-                                  VALUES (?, ?, ?)");
+        $stmt = $mysqli->prepare("
+            INSERT INTO presupuestos (propiedad_id, year, total_amount)
+            VALUES (?, ?, ?)
+        ");
         $stmt->bind_param("iid", $propiedad_id, $anio, $monto_total);
         $stmt->execute();
         $stmt->close();
         header("Location: ?section=presupuestos");
         exit;
+
     } elseif ($accion == 'editar' && $presupuesto_id > 0) {
-        $stmt = $mysqli->prepare("UPDATE presupuestos
-                                  SET propiedad_id=?, year=?, total_amount=?
-                                  WHERE budget_id=?");
+        $stmt = $mysqli->prepare("
+            UPDATE presupuestos
+            SET propiedad_id=?, year=?, total_amount=?
+            WHERE budget_id=?
+        ");
         $stmt->bind_param("iidi", $propiedad_id, $anio, $monto_total, $presupuesto_id);
         $stmt->execute();
         $stmt->close();
@@ -54,12 +59,15 @@ if ($accion == 'crear') {
                 <?php endwhile; ?>
             </select>
         </label><br><br>
+
         <label>Año:
             <input type="number" name="anio" value="<?php echo date('Y'); ?>">
         </label><br><br>
+
         <label>Monto Total:
             <input type="number" step="0.01" name="monto_total" value="0.00">
         </label><br><br>
+
         <button type="submit" class="actualizar">Crear</button>
     </form>
     <?php
@@ -88,18 +96,23 @@ if ($accion == 'editar' && $presupuesto_id > 0) {
             <select name="propiedad_id">
                 <?php while($p = $propiedades->fetch_assoc()): ?>
                     <option value="<?php echo $p['propiedad_id']; ?>"
-                        <?php if($p['propiedad_id'] == $presupuesto['property_id']) echo 'selected'; ?>>
+                        <?php if($p['propiedad_id'] == $presupuesto['propiedad_id']) echo 'selected'; ?>>
                         <?php echo htmlspecialchars($p['nombre_propiedad']); ?>
                     </option>
                 <?php endwhile; ?>
             </select>
         </label><br><br>
+
         <label>Año:
-            <input type="number" name="anio" value="<?php echo htmlspecialchars($presupuesto['year']); ?>">
+            <input type="number" name="anio" 
+                   value="<?php echo htmlspecialchars($presupuesto['year']); ?>">
         </label><br><br>
+
         <label>Monto Total:
-            <input type="number" step="0.01" name="monto_total" value="<?php echo htmlspecialchars($presupuesto['total_amount']); ?>">
+            <input type="number" step="0.01" name="monto_total" 
+                   value="<?php echo htmlspecialchars($presupuesto['total_amount']); ?>">
         </label><br><br>
+
         <button type="submit" class="actualizar">Guardar</button>
     </form>
     <?php
@@ -107,10 +120,12 @@ if ($accion == 'editar' && $presupuesto_id > 0) {
 }
 
 // LISTAR
-$result = $mysqli->query("SELECT pr.*, p.nombre_propiedad
-                          FROM presupuestos pr
-                          JOIN propiedades p ON pr.property_id = p.propiedad_id
-                          ORDER BY pr.budget_id DESC");
+$result = $mysqli->query("
+    SELECT pr.*, p.nombre_propiedad
+    FROM presupuestos pr
+    JOIN propiedades p ON pr.propiedad_id = p.propiedad_id
+    ORDER BY pr.budget_id DESC
+");
 ?>
 <h3>Presupuestos</h3>
 <p><a href="?section=presupuestos&accion=crear" class="actualizar">+ Crear Presupuesto</a></p>
