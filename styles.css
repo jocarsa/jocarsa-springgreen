@@ -25,10 +25,10 @@ header, footer {
 }
 
 /* Header */
-header h1{
+nav h1{
 	margin:0px;
 }
-header h1 a {
+nav h1 a {
     margin: 0px;
     padding: 10px;
     flex: 1;
@@ -39,11 +39,11 @@ header h1 a {
     justify-content: left;
     align-items: center;
     align-content: stretch;
-    padding-left:18px;
+    padding-left:8px;
     text-decoration:none;
     color:white;
 }
-header h1 img {
+nav h1 img {
     width: 35px;
     margin-right: 16px;
 }
@@ -119,7 +119,7 @@ main nav {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: stretch;
     align-content: stretch;
     padding-right: 0px !important;
@@ -296,3 +296,114 @@ footer {
     display: block;
     font-weight: bold;
             }
+            section a{
+            	text-decoration:none;
+            	background:DarkSlateGray;
+            	color:white;
+            	padding:5px 10px;
+            	border-radius:5px;
+            }
+            /* -------------------------------
+   Enhanced CRUD Form Styling
+   ------------------------------- */
+form.crud-form {
+  /* Use a grid layout with two equal columns */
+ 
+
+  gap: 1rem;
+    /* Limit overall form width */
+  margin: 2rem auto; /* Center the form horizontally */
+  padding: 1.5rem;
+  background: #f7f7f7;
+ 
+  
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Group each form field for consistent spacing */
+.crud-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure that labels take the full width and have emphasis */
+.crud-form label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+  grid-column: span 2;  /* Labels span both columns for better readability */
+}
+
+/* Style inputs, textareas, and selects */
+input,
+textarea,
+select,button {
+  padding: 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 0.5rem;
+}
+
+/* Allow specific fields to span only one column if needed */
+/* Apply the .half-width class to form groups you want in a single column */
+.crud-form .half-width {
+  grid-column: span 1;
+}
+
+/* Give full-width to fields that need more space */
+.crud-form .full-width {
+  grid-column: span 2;
+}
+
+/* Style for the submit button so it spans both columns */
+.crud-form button {
+  grid-column: span 2;
+  padding: 0.75rem;
+  background: DarkSlateGray;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Button hover effect */
+.crud-form button:hover {
+  background: #285a7b;
+}
+
+/* Responsive adjustment: Stack columns on narrow screens */
+@media (max-width: 600px) {
+  form.crud-form {
+    grid-template-columns: 1fr;
+  }
+  .crud-form label,
+  .crud-form input,
+  .crud-form textarea,
+  .crud-form select,
+  .crud-form button {
+    grid-column: span 1;
+  }
+}
+fieldset{
+	border:none;
+	display:flex;
+}
+fieldset label{
+	flex:1
+}
+fieldset input,
+fieldset textarea,
+fieldset select{
+	flex:1;
+}
+form fieldset a{
+	height: 22px;
+    margin-left: 10px;
+    position: relative;
+    top: 4px;
+}

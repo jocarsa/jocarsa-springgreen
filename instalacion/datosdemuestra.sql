@@ -423,3 +423,8 @@ INSERT INTO servicios_solicitudes (reserva_id, servicio_id, personal_id, fecha_s
 (3, 11, 17, '2025-04-09 16:00:00', '2025-04-17 10:00:00', 'confirmado', 70.00, 'Tour en español para 2 personas'),
 (4, 14, NULL, '2025-04-09 14:00:00', '2025-04-19 09:00:00', 'solicitado', 15.00, 'Solicitud de 2 bicicletas'),
 (5, 17, NULL, '2025-04-09 11:30:00', '2025-04-22 17:00:00', 'solicitado', 45.00, 'Taller para 2 personas');
+
+
+-- Insert initial user record in the usuarios table
+INSERT INTO `usuarios` (`full_name`, `email`, `username`, `password`)
+VALUES ('Jose Vicente Carratala', 'info@josevicentecarratala.com', 'jocarsa', 'jocarsa');
