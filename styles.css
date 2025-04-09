@@ -1,0 +1,246 @@
+/* Estilos generales */
+@import url('https://static.jocarsa.com/fuentes/ubuntu-font-family-0.83/ubuntu.css');
+
+html, body {
+    padding: 0px;
+    margin: 0px;
+    font-family: Ubuntu, sans-serif;
+    height: 100%;
+    transition: all 1s;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: stretch;
+    background: DarkSlateGray;
+    font-size: 1em;
+}
+
+header, footer {
+    color: white;
+}
+
+/* Header */
+header h1 {
+    margin: 0px;
+    padding: 10px;
+    flex: 1;
+    font-size: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+}
+header h1 img {
+    width: 35px;
+    margin-right: 16px;
+}
+header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    align-content: stretch;
+}
+header .boton {
+    border: 0px;
+    background: white;
+    width: 30px;
+    height: 30px;
+}
+header .boton:first-child {
+    border-radius: 5px 0px 0px 5px;
+}
+header .boton:last-child {
+    border-radius: 0px 5px 5px 0px;
+}
+header nav {
+    flex: 3;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+    gap: 2px;
+}
+header #cerrarsesion {
+    filter: brightness(14.5);
+}
+header .icono {
+    filter: brightness(0);
+}
+
+/* Efecto relieve en botones */
+.relieve {
+    background-color: rgba(0,0,0,0.3);
+    top: 0px;
+    border: none;
+    box-shadow:
+        0 4px 0 rgba(255,255,255,0.7),
+        0 6px 6px rgba(0, 0, 0, 0.2);
+    position: relative;
+    transition: all 0.2s ease;
+}
+.relieve:active {
+    top: 4px;
+    box-shadow:
+        0 0 0 #357ab7,
+        0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Main layout */
+main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: stretch;
+    flex: 30;
+}
+main nav {
+    background: DarkSlateGray;
+    color: white;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    align-content: stretch;
+    padding-right: 0px !important;
+    transition: all 1s;
+    margin-left: 10px;
+}
+main nav .enlaces {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    align-content: stretch;
+    padding: 0px;
+}
+section {
+    background: white;
+    flex: 5;
+    border-radius: 10px 0px 0px 10px;
+    box-shadow: 0px 5px 10px rgba(0,0,0,0.4);
+    padding: 30px !important;
+    position: relative;
+    z-index: 10000;
+}
+
+main nav div {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+    width: 200px;
+    transition: all 1s;
+}
+main nav hr {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid lightgrey;
+}
+main .icono {
+    background: white;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    border-radius: 20px;
+    color: DarkSlateGray;
+    text-align: center;
+    font-weight: bold;
+    margin-right: 20px;
+    line-height: 30px;
+    text-transform: uppercase;
+}
+main .activo,
+main nav>div>div:hover {
+    background: white;
+    color: DarkSlateGray;
+    border-radius: 10px 0px 0px 10px;
+    position: relative;
+    z-index: 10000;
+}
+main .activo .icono {
+    background: DarkSlateGray;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    border-radius: 30px;
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    margin-right: 20px;
+}
+#ocultar {
+    padding: 10px;
+    width: 200px;
+}
+#ocultar .icono {
+    transform: rotate(180deg);
+    transition: all 1s;
+}
+.operaciones {
+    padding: 0px;
+}
+
+/* Sección principal (tabla) */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table thead {
+    background: DarkSlateGray;
+    color: white;
+}
+table th,
+table td {
+    padding: 10px;
+}
+table tbody tr {
+    border-bottom: 1px solid lightgrey;
+}
+.actualizar {
+    background: yellow;
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    text-decoration: none;
+    font-size: 10px;
+}
+.eliminar {
+    background: red;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    margin: 5px;
+    text-decoration: none;
+    font-size: 10px;
+}
+.eliminar, .actualizar {
+    filter: brightness(14.5);
+}
+
+/* Footer */
+footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    align-content: stretch;
+    color: white;
+}
+
